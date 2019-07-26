@@ -3,7 +3,9 @@ import {
   CSS3DRenderer,
   CSS3DObject
 } from "../../node_modules/three/examples/jsm/renderers/CSS3DRenderer";
+import { h } from "./ap";
 
+console.log(h);
 var camera, scene, renderer;
 var controls;
 var Element = function(id, x, y, z, ry) {

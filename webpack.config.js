@@ -12,6 +12,10 @@ module.exports = {
     // where we defined file patterns and their loaders
     rules: [
       {
+        test: /\.(ts|tsx)$/,
+        loader: "babel-loader"
+      },
+      {
         test: /\.js$/,
         use: "babel-loader",
         exclude: [/node_modules/]
@@ -47,6 +51,7 @@ module.exports = {
       }
     ]
   },
+  resolve: { extensions: [".js", ".jsx", ".tsx", ".ts", ".json"] },
   plugins: [
     // Array of plugins to apply to build chunk
     new HtmlWebpackPlugin({
