@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin"); // Require  html-webpa
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-  entry: __dirname + "/src/app/app.js", // webpack entry point. Module to start building dependency graph
+  entry: __dirname + "/src/app/app.ts", // webpack entry point. Module to start building dependency graph
   output: {
     path: __dirname + "/dist", // Folder to store generated bundle
     filename: "bundle.js", // Name of generated bundle after build
