@@ -3,6 +3,7 @@ import { CSS3DRenderer } from "../../node_modules/three/examples/jsm/renderers/C
 import { TrackballControls } from "../../node_modules/three/examples/jsm/controls/TrackballControls";
 import { VideoElement } from "../components/VideoElement";
 import { getVideoId } from "../components/VideoId";
+import { config } from "../config";
 
 let camera: THREE.PerspectiveCamera;
 let scene: THREE.Scene;

@@ -1,4 +1,6 @@
 import { sample } from "lodash";
+import { config } from "../config";
+import * as axios from "axios";
 
 const idList = [
   "SJOz3qjfQXU",
