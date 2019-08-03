@@ -12,11 +12,8 @@ module.exports = {
     // where we defined file patterns and their loaders
     rules: [
       {
-        test: /\.(ts|tsx)$/,
-        loader: "babel-loader"
-      },
-      {
-        test: /\.js$/,
+        test: /\.ts$/,
+        resolve: { extensions: [".ts", ".js"] },
         use: "babel-loader",
         exclude: [/node_modules/]
       },

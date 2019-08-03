@@ -2,8 +2,7 @@ import * as THREE from "three";
 import { CSS3DRenderer } from "../../node_modules/three/examples/jsm/renderers/CSS3DRenderer";
 import { TrackballControls } from "../../node_modules/three/examples/jsm/controls/TrackballControls";
 import { VideoElement } from "../components/VideoElement";
-import { getVideoId } from "../components/VideoId";
-import { config } from "../config";
+import { getVideoId, searchYoutube } from "../components/VideoId";
 
 let camera: THREE.PerspectiveCamera;
 let scene: THREE.Scene;
@@ -11,9 +10,16 @@ let renderer: CSS3DRenderer;
 let controls: TrackballControls;
 const group = new THREE.Group();
 
-init();
-animate();
-function init() {
+run();
+
+async function run() {
+  await init();
+  animate();
+}
+
+async function init() {
+  await searchYoutube("something");
+
   let container = document.getElementById("container");
   camera = new THREE.PerspectiveCamera(
     50,
