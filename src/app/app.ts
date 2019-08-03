@@ -2,12 +2,13 @@ import * as THREE from "three";
 import { CSS3DRenderer } from "../../node_modules/three/examples/jsm/renderers/CSS3DRenderer";
 import { TrackballControls } from "../../node_modules/three/examples/jsm/controls/TrackballControls";
 import { VideoElement } from "../components/VideoElement";
-import { getVideoId, searchYoutube } from "../components/VideoId";
+import { VideoIdList } from "../components/VideoIdList";
 
 let camera: THREE.PerspectiveCamera;
 let scene: THREE.Scene;
 let renderer: CSS3DRenderer;
 let controls: TrackballControls;
+let videoIdList: VideoIdList;
 const group = new THREE.Group();
 
 run();
@@ -18,7 +19,8 @@ async function run() {
 }
 
 async function init() {
-  await searchYoutube("something");
+  videoIdList = new VideoIdList();
+  await videoIdList.init();
 
   let container = document.getElementById("container");
   camera = new THREE.PerspectiveCamera(
@@ -34,10 +36,16 @@ async function init() {
   if (container) {
     container.appendChild(renderer.domElement);
   }
-  group.add(VideoElement(getVideoId(), 0, 0, 240, 0));
-  group.add(VideoElement(getVideoId(), 240, 0, 0, Math.PI / 2));
-  group.add(VideoElement(getVideoId(), 0, 0, -240, Math.PI));
-  group.add(VideoElement(getVideoId(), -240, 0, 0, -Math.PI / 2));
+
+  group.add(VideoElement(await videoIdList.getVideoId(), 0, 0, 240, 0));
+  group.add(
+    VideoElement(await videoIdList.getVideoId(), 240, 0, 0, Math.PI / 2)
+  );
+  group.add(VideoElement(await videoIdList.getVideoId(), 0, 0, -240, Math.PI));
+  group.add(
+    VideoElement(await videoIdList.getVideoId(), -240, 0, 0, -Math.PI / 2)
+  );
+
   scene.add(group);
   controls = new TrackballControls(camera, renderer.domElement);
   controls.rotateSpeed = 4;
