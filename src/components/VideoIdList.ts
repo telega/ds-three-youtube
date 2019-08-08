@@ -1,9 +1,8 @@
 import { sample } from "lodash";
 import { config } from "../config";
-import { data } from "../data/data";
 import axios from "axios";
 import { stringify } from "querystring";
-
+const data = require("../data/internet_health_report.json");
 const END_POINT = "https://www.googleapis.com/youtube/v3/search?";
 const MAX_RESULTS = 1;
 
@@ -45,10 +44,13 @@ export class VideoIdList {
 
   private getMore = async (n: number = 5) => {
     await Promise.all(new Array(n).fill(null).map(a => this.getOne()));
+    if (this.idList.length < n) {
+      await this.getMore(n);
+    }
   };
 
   public getVideoId = async (): Promise<string> => {
-    while (this.idList.length === 0) {
+    if (this.idList.length === 0) {
       await this.getMore();
     }
     return this.idList.pop() as string;
