@@ -1,14 +1,19 @@
 import * as THREE from "three";
-import { CSS3DRenderer } from "../../node_modules/three/examples/jsm/renderers/CSS3DRenderer";
+import {
+  CSS3DRenderer,
+  CSS3DObject
+} from "../../node_modules/three/examples/jsm/renderers/CSS3DRenderer";
 import { TrackballControls } from "../../node_modules/three/examples/jsm/controls/TrackballControls";
-import { VideoElement } from "../components/VideoElement";
+import { VideoElement, VideoObject } from "../components/VideoElement";
 import { VideoIdList } from "../components/VideoIdList";
+import { random } from "lodash";
 
 let camera: THREE.PerspectiveCamera;
 let scene: THREE.Scene;
 let renderer: CSS3DRenderer;
 let controls: TrackballControls;
 let videoIdList: VideoIdList;
+let videoObjects: VideoObject[] = [];
 const group = new THREE.Group();
 
 run();
@@ -16,6 +21,28 @@ run();
 async function run() {
   await init();
   animate();
+}
+
+async function initVideoObjects(n = 5) {
+  while (n >= 1) {
+    videoObjects.push(
+      new VideoObject(
+        VideoElement(
+          await videoIdList.getVideoId(),
+          random(0, 240, false),
+          random(0, 240, false),
+          random(0, 240, false),
+          random(0, 360, false)
+        ),
+        random(-0.5, 0.5, true),
+        random(-0.5, 0.5, true),
+        random(-0.5, 0.5, true)
+      )
+    );
+    n--;
+  }
+
+  videoObjects.forEach(vo => scene.add(vo.videoElement));
 }
 
 async function init() {
@@ -31,22 +58,18 @@ async function init() {
   );
   camera.position.set(500, 350, 750);
   scene = new THREE.Scene();
+
+  // const fog = new THREE.FogExp2(0xffffff, 0.8);
+  // scene.fog = fog;
+
   renderer = new CSS3DRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
   if (container) {
     container.appendChild(renderer.domElement);
   }
 
-  group.add(VideoElement(await videoIdList.getVideoId(), 0, 0, 240, 0));
-  group.add(
-    VideoElement(await videoIdList.getVideoId(), 240, 0, 0, Math.PI / 2)
-  );
-  group.add(VideoElement(await videoIdList.getVideoId(), 0, 0, -240, Math.PI));
-  group.add(
-    VideoElement(await videoIdList.getVideoId(), -240, 0, 0, -Math.PI / 2)
-  );
+  await initVideoObjects(2);
 
-  scene.add(group);
   controls = new TrackballControls(camera, renderer.domElement);
   controls.rotateSpeed = 4;
   window.addEventListener("resize", onWindowResize, false);
@@ -71,9 +94,12 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
+
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
   renderer.render(scene, camera);
-  group.position.setX(group.position.x + 0.1);
+  //group.position.setX(group.position.x + 0.1);
+
+  videoObjects.forEach(vo => vo.animate());
 }

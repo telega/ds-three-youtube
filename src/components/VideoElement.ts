@@ -25,5 +25,39 @@ export const VideoElement = (
   const object = new CSS3DObject(div);
   object.position.set(x, y, z);
   object.rotation.y = ry;
+  object.name = id;
   return object;
 };
+
+export class VideoObject {
+  public videoElement: CSS3DObject;
+  public x: number = 0;
+  public y: number = 0;
+  public z: number = 0;
+  public dx: number = 0;
+  public dy: number = 0;
+  public dz: number = 0;
+
+  constructor(
+    videoElement: CSS3DObject,
+    dx: number = 0,
+    dy: number = 0,
+    dz: number = 0
+  ) {
+    const { x, y, z } = videoElement.position;
+    this.videoElement = videoElement;
+    this.dx = dx;
+    this.dy = dy;
+    this.dz = dz;
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
+
+  animate() {
+    this.x += this.dx;
+    this.y += this.dy;
+    this.z += this.dz;
+    this.videoElement.position.set(this.x, this.y, this.z);
+  }
+}
