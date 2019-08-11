@@ -37,12 +37,14 @@ export class VideoObject {
   public dx: number = 0;
   public dy: number = 0;
   public dz: number = 0;
+  public createTime: number = 0;
 
   constructor(
     videoElement: CSS3DObject,
     dx: number = 0,
     dy: number = 0,
-    dz: number = 0
+    dz: number = 0,
+    createTime: number = 0
   ) {
     const { x, y, z } = videoElement.position;
     this.videoElement = videoElement;
@@ -52,6 +54,7 @@ export class VideoObject {
     this.x = x;
     this.y = y;
     this.z = z;
+    this.createTime = createTime;
   }
 
   animate() {
