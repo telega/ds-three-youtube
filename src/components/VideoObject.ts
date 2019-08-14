@@ -1,4 +1,5 @@
 import { CSS3DObject } from "../../node_modules/three/examples/jsm/renderers/CSS3DRenderer";
+import { v4 } from "uuid";
 export const VideoElement = (
   id: string,
   x: number,
@@ -25,7 +26,7 @@ export const VideoElement = (
   const object = new CSS3DObject(div);
   object.position.set(x, y, z);
   object.rotation.y = ry;
-  object.name = id;
+  object.name = v4();
   return object;
 };
 

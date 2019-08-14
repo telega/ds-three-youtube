@@ -29,7 +29,7 @@ async function run() {
   animate();
 }
 
-async function addVideoObject() {
+async function addVideoObject(isInit: boolean = false) {
   const elapsedTime = clock.getElapsedTime();
   const videoObject = new VideoObject(
     VideoElement(
@@ -42,15 +42,16 @@ async function addVideoObject() {
     random(-0.5, 0.5, true),
     random(-0.5, 0.5, true),
     random(-0.5, 0.5, true),
-    elapsedTime
+    isInit ? elapsedTime : random(1, INITIAL_VIDEO_COUNT) * VIDEO_ADD_INTERVAL //fake time or they will get removed at once
   );
+  console.log(videoObjects.length);
   videoObjects.push(videoObject);
   scene.add(videoObject.videoElement);
 }
 
 async function initVideoObjects(n = 5) {
   while (n >= 1) {
-    await addVideoObject();
+    await addVideoObject(true);
     n--;
   }
 }
@@ -116,12 +117,10 @@ async function animate() {
 }
 
 async function addNewVideoObjects() {
-  console.log("adding...");
   if (videoObjects.length < MAX_VIDEO_OBJECTS) {
     const lastVideoObject = videoObjects[length - 1];
     const lastCreateTime = lastVideoObject ? lastVideoObject.createTime : 0;
-    console.log(lastCreateTime);
-    if (lastCreateTime + VIDEO_ADD_INTERVAL < clock.elapsedTime) {
+    if (lastCreateTime + VIDEO_ADD_INTERVAL < clock.getElapsedTime()) {
       console.log("ADDING len@: ", videoObjects.length);
       await addVideoObject();
     }
@@ -141,12 +140,9 @@ async function removeStaleVideoObjects() {
   objectsToRemove.forEach(name => {
     const object = scene.getObjectByName(name);
     if (object) {
-      console.log("REMOVING : ");
       scene.remove(object);
 
-      remove(videoObjects, vo => {
-        vo.videoElement.name === name;
-      });
+      remove(videoObjects, vo => vo.videoElement.name === name);
     }
   });
 }
