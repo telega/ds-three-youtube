@@ -7,10 +7,11 @@ import { TrackballControls } from "../../node_modules/three/examples/jsm/control
 import { VideoElement, VideoObject } from "../components/VideoObject";
 import { VideoIdList } from "../components/VideoIdList";
 import { random, remove } from "lodash";
+import * as _ from "lodash";
 
-const MAX_VIDEO_OBJECTS = 5;
+const MAX_VIDEO_OBJECTS = 10;
 const VIDEO_ADD_INTERVAL = 10; //seconds
-const VIDEO_REMOVE_INTERVAL = 30; // seconds
+const VIDEO_REMOVE_INTERVAL = 20; // seconds
 const INITIAL_VIDEO_COUNT = 3;
 
 let camera: THREE.PerspectiveCamera;
@@ -31,9 +32,14 @@ async function run() {
 
 async function addVideoObject(isInit: boolean = false) {
   const elapsedTime = clock.getElapsedTime();
+  const videoId = await videoIdList.getVideoId();
+  const createTime = isInit
+    ? _.random(1, INITIAL_VIDEO_COUNT, false) * VIDEO_ADD_INTERVAL //fake time or they will get removed at once
+    : elapsedTime;
+
   const videoObject = new VideoObject(
     VideoElement(
-      await videoIdList.getVideoId(),
+      videoId,
       random(0, 240, false),
       random(0, 240, false),
       random(0, 240, false),
@@ -42,9 +48,8 @@ async function addVideoObject(isInit: boolean = false) {
     random(-0.5, 0.5, true),
     random(-0.5, 0.5, true),
     random(-0.5, 0.5, true),
-    isInit ? elapsedTime : random(1, INITIAL_VIDEO_COUNT) * VIDEO_ADD_INTERVAL //fake time or they will get removed at once
+    createTime
   );
-  console.log(videoObjects.length);
   videoObjects.push(videoObject);
   scene.add(videoObject.videoElement);
 }
@@ -112,8 +117,8 @@ async function animate() {
   renderer.render(scene, camera);
   //group.position.setX(group.position.x + 0.1);
   videoObjects.forEach(vo => vo.animate());
-  await removeStaleVideoObjects();
   await addNewVideoObjects();
+  await removeStaleVideoObjects();
 }
 
 async function addNewVideoObjects() {
@@ -121,7 +126,6 @@ async function addNewVideoObjects() {
     const lastVideoObject = videoObjects[length - 1];
     const lastCreateTime = lastVideoObject ? lastVideoObject.createTime : 0;
     if (lastCreateTime + VIDEO_ADD_INTERVAL < clock.getElapsedTime()) {
-      console.log("ADDING len@: ", videoObjects.length);
       await addVideoObject();
     }
   }
