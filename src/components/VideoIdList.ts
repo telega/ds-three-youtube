@@ -1,10 +1,11 @@
-import { sample } from "lodash";
+import { sample, concat, isArray } from "lodash";
 import { config } from "../config";
 import axios from "axios";
 import { stringify } from "querystring";
 const data = require("../data/internet_health_report.json");
 const END_POINT = "https://www.googleapis.com/youtube/v3/search?";
-const MAX_RESULTS = 1;
+const MAX_RESULTS = 10;
+const DEFAULT_VIDEO = "ZY3J3Y_OU0w"; // yule log
 
 export class VideoIdList {
   private idList: string[] = [];
@@ -20,30 +21,32 @@ export class VideoIdList {
     try {
       const response = await axios.get(END_POINT + stringify(params));
       return response.data.items.length > 0 && response.data.items[0].id
-        ? response.data.items[0].id.videoId
-        : null;
+        ? response.data.items.map((item: any) => item.id.videoId)
+        : DEFAULT_VIDEO;
     } catch (err) {
       console.log(err);
-      return null;
+      return DEFAULT_VIDEO;
     }
   };
 
   public init = async () => {
-    await this.getMore(10);
+    await this.getMore(5);
   };
 
-  private getOne = async () => {
+  private getSome = async () => {
     const term = sample(data) as string;
-    const id = "RDsEJF-ctr0"; //await this.searchYoutube(term);
-    if (id) {
-      this.idList.push(id);
+    const ids = await this.searchYoutube(term);
+
+    if (ids) {
+      isArray(ids) ? this.idList.concat(ids) : this.idList.push(ids);
       return true;
     }
+
     return false;
   };
 
   private getMore = async (n: number = 5) => {
-    await Promise.all(new Array(n).fill(null).map(a => this.getOne()));
+    await Promise.all(new Array(n).fill(null).map(a => this.getSome()));
     if (this.idList.length < n) {
       await this.getMore(n);
     }

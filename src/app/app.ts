@@ -145,7 +145,6 @@ async function removeStaleVideoObjects() {
     const object = scene.getObjectByName(name);
     if (object) {
       scene.remove(object);
-
       remove(videoObjects, vo => vo.videoElement.name === name);
     }
   });
