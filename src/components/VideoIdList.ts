@@ -47,9 +47,6 @@ export class VideoIdList {
 
   private getMore = async (n: number = 5) => {
     await Promise.all(new Array(n).fill(null).map(a => this.getSome()));
-    if (this.idList.length < n) {
-      await this.getMore(n);
-    }
   };
 
   public getVideoId = async (): Promise<string> => {
