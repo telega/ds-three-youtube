@@ -30,7 +30,8 @@ export class VideoIdList {
   };
 
   public init = async () => {
-    await this.getMore(5);
+    //await this.getMore(5);
+    await this.getSome();
   };
 
   private getSome = async () => {
@@ -45,13 +46,13 @@ export class VideoIdList {
     return false;
   };
 
-  private getMore = async (n: number = 5) => {
-    await Promise.all(new Array(n).fill(null).map(a => this.getSome()));
-  };
+  // private getMore = async (n: number = 5) => {
+  //   await Promise.all(new Array(n).fill(null).map(a => this.getSome()));
+  // };
 
   public getVideoId = async (): Promise<string> => {
     if (this.idList.length === 0) {
-      await this.getMore();
+      await this.getSome();
     }
     return this.idList.pop() as string;
   };

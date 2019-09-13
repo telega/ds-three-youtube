@@ -12,7 +12,7 @@ import * as _ from "lodash";
 const MAX_VIDEO_OBJECTS = 10;
 const VIDEO_ADD_INTERVAL = 10; //seconds
 const VIDEO_REMOVE_INTERVAL = 20; // seconds
-const INITIAL_VIDEO_COUNT = 3;
+//const INITIAL_VIDEO_COUNT = 3;
 
 let camera: THREE.PerspectiveCamera;
 let scene: THREE.Scene;
@@ -30,12 +30,14 @@ async function run() {
   animate();
 }
 
-async function addVideoObject(isInit: boolean = false) {
+async function addVideoObject() {
+  if (videoObjects.length > MAX_VIDEO_OBJECTS) {
+    console.log("returning");
+    return;
+  }
   const elapsedTime = clock.getElapsedTime();
   const videoId = await videoIdList.getVideoId();
-  const createTime = isInit
-    ? _.random(1, INITIAL_VIDEO_COUNT, false) * VIDEO_ADD_INTERVAL //fake time or they will get removed at once
-    : elapsedTime;
+  const createTime = elapsedTime;
 
   const videoObject = new VideoObject(
     VideoElement(
@@ -54,11 +56,8 @@ async function addVideoObject(isInit: boolean = false) {
   scene.add(videoObject.videoElement);
 }
 
-async function initVideoObjects(n = 5) {
-  while (n >= 1) {
-    await addVideoObject(true);
-    n--;
-  }
+async function initVideoObjects() {
+  await addVideoObject();
 }
 
 async function init() {
@@ -84,7 +83,7 @@ async function init() {
     container.appendChild(renderer.domElement);
   }
 
-  await initVideoObjects(INITIAL_VIDEO_COUNT);
+  await initVideoObjects();
 
   controls = new TrackballControls(camera, renderer.domElement);
   controls.rotateSpeed = 4;
@@ -122,6 +121,7 @@ async function animate() {
 }
 
 async function addNewVideoObjects() {
+  console.log(videoObjects.length);
   if (videoObjects.length < MAX_VIDEO_OBJECTS) {
     const lastVideoObject = videoObjects[length - 1];
     const lastCreateTime = lastVideoObject ? lastVideoObject.createTime : 0;
