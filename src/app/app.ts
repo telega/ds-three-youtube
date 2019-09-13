@@ -22,6 +22,7 @@ let videoIdList: VideoIdList;
 let videoObjects: VideoObject[] = [];
 //const group = new THREE.Group();
 const clock = new THREE.Clock();
+let isAdding = false;
 
 run();
 
@@ -31,10 +32,7 @@ async function run() {
 }
 
 async function addVideoObject() {
-  if (videoObjects.length > MAX_VIDEO_OBJECTS) {
-    console.log("returning");
-    return;
-  }
+  isAdding = true;
   const elapsedTime = clock.getElapsedTime();
   const videoId = await videoIdList.getVideoId();
   const createTime = elapsedTime;
@@ -54,6 +52,7 @@ async function addVideoObject() {
   );
   videoObjects.push(videoObject);
   scene.add(videoObject.videoElement);
+  isAdding = false;
 }
 
 async function initVideoObjects() {
@@ -121,8 +120,7 @@ async function animate() {
 }
 
 async function addNewVideoObjects() {
-  console.log(videoObjects.length);
-  if (videoObjects.length < MAX_VIDEO_OBJECTS) {
+  if (videoObjects.length <= MAX_VIDEO_OBJECTS && !isAdding) {
     const lastVideoObject = videoObjects[length - 1];
     const lastCreateTime = lastVideoObject ? lastVideoObject.createTime : 0;
     if (lastCreateTime + VIDEO_ADD_INTERVAL < clock.getElapsedTime()) {
