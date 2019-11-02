@@ -27,7 +27,6 @@ export const VideoElement = (
   object.position.set(x, y, z);
   object.rotation.y = ry;
   object.name = v4();
-  console.log(object.name);
   return object;
 };
 

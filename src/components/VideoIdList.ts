@@ -10,7 +10,7 @@ const DEFAULT_VIDEO = "ZY3J3Y_OU0w"; // yule log
 export class VideoIdList {
   private idList: string[] = [];
 
-  private searchYoutube = async (term: string): Promise<string | null> => {
+  private searchYoutube = async (term: string): Promise<string[]> => {
     const params = {
       q: term,
       maxResults: MAX_RESULTS,
@@ -22,33 +22,21 @@ export class VideoIdList {
       const response = await axios.get(END_POINT + stringify(params));
       return response.data.items.length > 0 && response.data.items[0].id
         ? response.data.items.map((item: any) => item.id.videoId)
-        : DEFAULT_VIDEO;
+        : [DEFAULT_VIDEO];
     } catch (err) {
-      console.log(err);
-      return DEFAULT_VIDEO;
+      return [DEFAULT_VIDEO];
     }
   };
 
   public init = async () => {
-    //await this.getMore(5);
     await this.getSome();
   };
 
   private getSome = async () => {
     const term = sample(data) as string;
     const ids = await this.searchYoutube(term);
-
-    if (ids) {
-      isArray(ids) ? this.idList.concat(ids) : this.idList.push(ids);
-      return true;
-    }
-
-    return false;
+    this.idList = this.idList.concat(ids);
   };
-
-  // private getMore = async (n: number = 5) => {
-  //   await Promise.all(new Array(n).fill(null).map(a => this.getSome()));
-  // };
 
   public getVideoId = async (): Promise<string> => {
     if (this.idList.length === 0) {
