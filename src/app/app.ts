@@ -10,9 +10,8 @@ import { random, remove } from "lodash";
 import * as _ from "lodash";
 
 const MAX_VIDEO_OBJECTS = 10;
-const VIDEO_ADD_INTERVAL = 10; //seconds
-const VIDEO_REMOVE_INTERVAL = 20; // seconds
-//const INITIAL_VIDEO_COUNT = 3;
+const VIDEO_ADD_INTERVAL = 5; //seconds
+const VIDEO_REMOVE_INTERVAL = 60; // seconds
 
 let camera: THREE.PerspectiveCamera;
 let scene: THREE.Scene;
@@ -20,7 +19,6 @@ let renderer: CSS3DRenderer;
 let controls: TrackballControls;
 let videoIdList: VideoIdList;
 let videoObjects: VideoObject[] = [];
-//const group = new THREE.Group();
 const clock = new THREE.Clock();
 let isAdding = false;
 
@@ -73,9 +71,6 @@ async function init() {
   camera.position.set(500, 350, 750);
   scene = new THREE.Scene();
 
-  // const fog = new THREE.FogExp2(0xffffff, 0.8);
-  // scene.fog = fog;
-
   renderer = new CSS3DRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
   if (container) {
@@ -113,7 +108,6 @@ async function animate() {
   requestAnimationFrame(animate);
   controls.update();
   renderer.render(scene, camera);
-  //group.position.setX(group.position.x + 0.1);
   videoObjects.forEach(vo => vo.animate());
   await addNewVideoObjects();
   await removeStaleVideoObjects();
