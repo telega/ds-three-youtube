@@ -1,5 +1,5 @@
 {
-  "name": "webpack-test",
+  "name": "ds-three-youtube",
   "version": "1.0.0",
   "description": "",
   "main": "app.ts",
@@ -7,6 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --history-api-fallback --inline --progress",
     "build": "webpack"
+  },
+  "repository": {
+    "homepage": "https://github.com/telega/ds-three-youtube"
   },
   "author": "",
   "license": "ISC",
@@ -25,7 +28,8 @@
     "uuid": "^3.3.2",
     "webpack": "^4.36.1",
     "webpack-cli": "^3.3.6",
-    "webpack-dev-server": "^3.7.2"
+    "webpack-dev-server": "^3.7.2",
+    "serialize-javascript": ">=2.1.1"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.5.5",
